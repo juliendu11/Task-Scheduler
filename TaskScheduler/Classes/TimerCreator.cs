@@ -51,11 +51,12 @@ namespace TaskScheduler.Classes
         }
 
 
-        private void DeleteTask(string taskID)
+        public void DeleteTask(string taskID, bool forceDelete =false)
         {
             if (this.taskScheduler.Timers.ContainsKey(taskID))
             {
-                this.taskScheduler.Timers[taskID].CancellationToken.Cancel();
+                if (this.taskScheduler.Timers[taskID].CancellationToken!=null)
+                    this.taskScheduler.Timers[taskID].CancellationToken.Cancel();
                 if (this.taskScheduler.Timers[taskID].StartTimer != null)
                 {
                     DeleteTaskStartTimer(taskID);
@@ -65,7 +66,7 @@ namespace TaskScheduler.Classes
                     DeleteTaskStopTimer(taskID);
                 }
 
-                if (this.taskScheduler.Options.DeleteTaskAfterCompleted)
+                if (this.taskScheduler.Options.DeleteTaskAfterCompleted || forceDelete)
                     taskScheduler.Timers.Remove(taskID);
             }
         }

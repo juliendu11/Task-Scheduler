@@ -24,6 +24,10 @@ namespace TaskScheduler
 
         bool VerifyTaskExistWithId(string taskid);
 
+        void StopAndDeleteAllTasks();
+
+        void StopAndDeleteTask(string taskId);
+
         CancellationToken GetTaskToken(string taskid);
 
         List<ITaskArg> GetAllTasks();

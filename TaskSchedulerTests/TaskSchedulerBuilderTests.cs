@@ -94,6 +94,16 @@ namespace TaskScheduler.Tests
             {
                 throw new NotImplementedException();
             }
+
+            public void StopAndDeleteAllTasks()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void StopAndDeleteTask(string taskId)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

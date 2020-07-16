@@ -202,5 +202,123 @@ namespace TaskScheduler.Tests
             Assert.AreEqual(getTimers[0].TaskId, taskID);
             Assert.AreEqual(getTimers[1].TaskId, taskID2);
         }
+
+        [TestMethod()]
+        public void Should_Delete_All_Tasks_With_2_Task_In_List_Return_Timers_List_Empty()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            string taskID = Guid.NewGuid().ToString();
+            string taskID2 = Guid.NewGuid().ToString();
+
+            taskScheduler.Timers.Add(taskID, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID;
+            taskScheduler.Timers.Add(taskID2, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID2;
+
+            taskScheduler.StopAndDeleteAllTasks();
+
+            Assert.AreEqual(0,taskScheduler.Timers.Count);
+        }
+
+        [TestMethod()]
+        public void Should_Delete_All_Tasks_With_Not_Existing_Task_In_List_Return_Timers_List_Empty()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            taskScheduler.StopAndDeleteAllTasks();
+
+            Assert.AreEqual(0, taskScheduler.Timers.Count);
+        }
+
+        [TestMethod()]
+        public void Should_Delete_1_Tasks_With_2_Task_In_List_Return_Timers_List_1_Task()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            string taskID = Guid.NewGuid().ToString();
+            string taskID2 = Guid.NewGuid().ToString();
+
+            taskScheduler.Timers.Add(taskID, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID;
+            taskScheduler.Timers.Add(taskID2, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID2;
+
+            taskScheduler.StopAndDeleteTask(taskID);
+
+            Assert.AreEqual(1, taskScheduler.Timers.Count);
+        }
+
+        [TestMethod()]
+        public void Should_Delete_All_Tasks_With_2_Same_Task_Id_In_List_Return_Timers_List_0_Task()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            string taskID = Guid.NewGuid().ToString();
+            string taskID2 = Guid.NewGuid().ToString();
+
+            taskScheduler.Timers.Add(taskID, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID;
+            taskScheduler.Timers.Add(taskID2, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID2;
+
+            taskScheduler.StopAndDeleteTask(taskID);
+            taskScheduler.StopAndDeleteTask(taskID2);
+
+            Assert.AreEqual(0, taskScheduler.Timers.Count);
+        }
+
+        [TestMethod()]
+        public void Should_Delete_2_Tasks_With_2_Same_Task_Id_In_List_Return_Timers_List_0_Task()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            string taskID = Guid.NewGuid().ToString();
+            string taskID2 = Guid.NewGuid().ToString();
+
+            taskScheduler.Timers.Add(taskID, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID;
+            taskScheduler.Timers.Add(taskID2, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID2;
+
+            taskScheduler.StopAndDeleteTask(taskID);
+            taskScheduler.StopAndDeleteTask(taskID2);
+
+            Assert.AreEqual(0, taskScheduler.Timers.Count);
+        }
+
+        [TestMethod()]
+        public void Should_Delete_1_Tasks_With_Not_Task_In_Timers_List_Return_Exception_Error()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            Assert.ThrowsException<Exception>(() =>
+            {
+                taskScheduler.StopAndDeleteTask("54564646");
+            });
+        }
+
+        [TestMethod()]
+        public void Should_Delete_1_Tasks_With_1_Task_In_Timers_List_But_Not_Same_Id_Return_Exception_Error()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+               .Build();
+
+            string taskID = Guid.NewGuid().ToString();
+
+            taskScheduler.Timers.Add(taskID, new Models.TaskArgWithPayload<object>(null));
+            taskScheduler.Timers.Last().Value.TaskId = taskID;
+
+            Assert.ThrowsException<Exception>(() =>
+            {
+                taskScheduler.StopAndDeleteTask("54564646");
+            });
+        }
     }
 }

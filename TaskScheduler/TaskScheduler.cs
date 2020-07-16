@@ -9,6 +9,8 @@ namespace TaskScheduler
 {
     public class TaskScheduler :ITaskScheduler
     {
+        private TimeSpan defaultTimezone;
+
         public Dictionary<string, ITaskArg> Timers { get; private set; }
         public DateTimeOffset SchedulerDateTime { get; internal set; }
 
@@ -19,6 +21,7 @@ namespace TaskScheduler
         {
             get
             {
+                SchedulerDateTime.ToOffset(defaultTimezone);
                 return new Classes.TaskAdder(this);
             }
         }
@@ -31,15 +34,14 @@ namespace TaskScheduler
         {
             this.Timers = new Dictionary<string, ITaskArg>();
             this.SchedulerDateTime = DateTimeOffset.Now;
+            this.defaultTimezone = DateTimeOffset.Now.Offset;
             this.TimerCreator = new Classes.TimerCreator(this);
             this.Options = new Options();
             this.linkTasksLaunched = linkTasksLaunched;
             this.linkTasksFinished = linkTasksFinished;
 
         }
-
         
-
         public void UpdateTimezone(TimeSpan timezone)
         {
             this.SchedulerDateTime.ToOffset(timezone);
@@ -73,6 +75,19 @@ namespace TaskScheduler
         public CancellationToken GetTaskToken(string taskid)
         {
             return GetTasksArgWithId(taskid).CancellationToken.Token;
+        }
+
+        public void StopAndDeleteAllTasks()
+        {
+            if (this.Timers.Count != 0)
+                this.Timers.Keys.ToList().ForEach(taskid => this.StopAndDeleteTask(taskid));
+        }
+
+        public void StopAndDeleteTask(string taskId)
+        {
+            if (!VerifyTaskExistWithId(taskId))
+                throw new Exception("This tasks with this id not exist in list");
+            this.TimerCreator.DeleteTask(taskId, true);
         }
     }
 }

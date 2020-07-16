@@ -262,6 +262,19 @@ namespace RealTest
             {
                 return GetTasksArgWithId(taskid).CancellationToken.Token;
             }
+
+            public void StopAndDeleteAllTasks()
+            {
+                if (this.Timers.Count != 0)
+                    this.Timers.Keys.ToList().ForEach(taskid => this.StopAndDeleteTask(taskid));
+            }
+
+            public void StopAndDeleteTask(string taskId)
+            {
+                if (!VerifyTaskExistWithId(taskId))
+                    throw new Exception("This tasks with this id not exist in list");
+                this.TimerCreator.DeleteTask(taskId, true);
+            }
         }
 
         struct MyCustomPayload
