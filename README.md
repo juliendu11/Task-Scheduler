@@ -35,7 +35,7 @@ static void NewTaskSimpleTaskArgs()
 
       newTaskId = taskScheduler.TaskAdder
         .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
-        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
+        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or use DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
             var token = taskArg.CancellationToken.Token;
@@ -64,7 +64,7 @@ static void NewTaskSimpleTaskArgsWithPayload()
 
       newTaskId = taskScheduler.TaskAdder
         .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
-        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
+        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or use DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
             var token = taskArg.CancellationToken.Token;
@@ -102,7 +102,7 @@ static void NewTaskWithCustomTaskArg()
 
       newTaskId = taskScheduler.TaskAdder
         .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
-        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
+        .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or use DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
             var token = taskArg.CancellationToken.Token;
@@ -139,7 +139,7 @@ static void NewTaskWithCustomTaskArg()
  - Do not use SetHours and SetDay at the same time it is either one or the other
  - Do not use SetCustomTaskArg and SetPayload at the same time it is either one or the other
  - You can manage the timezone with SetTimezone, the create task will be created in relation to this timezone, if no timezone is specified, the timezone will be from the current system
- - SetAction must be a task action, you must leave the "async" if you put a synchronous action
+ - SetAction must be a task action, you must put "async" if you put a synchronous action ("async" is required)
  - If you put an asynchronous action or a loop for SetAction, use the taskArg token as in the examples above, this will force the task to stop once the schedule has ended
  
 ## LinkFinishedStatus and LinkLaunchedStatus
