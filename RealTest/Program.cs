@@ -6,6 +6,8 @@ using TaskScheduler.Models;
 using System.Threading;
 using TaskScheduler.Enums;
 using TaskScheduler.Helpers;
+using System.Collections.Generic;
+using TaskScheduler.Classes;
 
 namespace RealTest
 {
@@ -55,11 +57,10 @@ namespace RealTest
         static void NewTaskSimpleTaskArgs()
         {
             string newTaskId = "";
-            var nowDate = DateTimeOffset.Now;
 
             newTaskId = taskScheduler.TaskAdder
                 .SetHours("14:00", "15:00") //In 24hr format
-                .SetDay(nowDate.AddDays(2), nowDate.AddDays(4)) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
+                .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
                 .SetAction(async (taskArg) =>
                 {
                     var token = taskArg.CancellationToken.Token;
@@ -71,7 +72,7 @@ namespace RealTest
                         i++;
                     }
                 })
-                .SetTimezone(nowDate.Offset)//Optional
+                .SetTimezone(DateTimeOffset.Now.Offset)//Optional
                 .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })//Optional
                 .LinkLaunchedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}"); })//Optional
                 .AddTask();
@@ -80,11 +81,10 @@ namespace RealTest
         static void NewTaskSimpleTaskArgsWithPayload()
         {
             string newTaskId = "";
-            var nowDate = DateTimeOffset.Now;
 
             newTaskId = taskScheduler.TaskAdder
                 .SetHours("14:00", "15:00") //In 24hr format
-                .SetDay(nowDate.AddDays(2), nowDate.AddDays(4)) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
+                .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
                 .SetAction(async (taskArg) =>
                 {
                     var token = taskArg.CancellationToken.Token;
@@ -96,7 +96,7 @@ namespace RealTest
                         i++;
                     }
                 })
-                .SetTimezone(nowDate.Offset)//Optional
+                .SetTimezone(DateTimeOffset.Now.Offset)//Optional
                 .SetPayload(new MyCustomPayload { UserId = Guid.NewGuid().ToString(), Username = "Bob" })//Optional
                 .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })//Optional
                 .LinkLaunchedStatus(taskArg =>
@@ -184,6 +184,84 @@ namespace RealTest
             //...Your custom prop, field,...
             public string Username { get; set; }
             public string UserId { get; set; }
+        }
+
+        public class CustomTaskScheduler : ITaskScheduler
+        {
+            public Dictionary<string, ITaskArg> Timers { get; private set; }
+            public DateTimeOffset SchedulerDateTime { get; internal set; }
+
+            private Action linkTasksLaunched;
+            private Action linkTasksFinished;
+
+            public TaskScheduler.Classes.TaskAdder TaskAdder
+            {
+                get
+                {
+                    return new TaskScheduler.Classes.TaskAdder(this);
+                }
+            }
+
+            public TaskScheduler.Classes.TimerCreator TimerCreator { get; private set; }
+            public Options Options { get; private set; }
+
+
+            public CustomTaskScheduler(Action linkTasksLaunched, Action linkTasksFinished)
+            {
+                this.Timers = new Dictionary<string, ITaskArg>();
+                this.SchedulerDateTime = DateTimeOffset.Now;
+                this.TimerCreator = new TaskScheduler.Classes.TimerCreator(this);
+                this.Options = new Options();
+                this.linkTasksLaunched = linkTasksLaunched;
+                this.linkTasksFinished = linkTasksFinished;
+
+            }
+
+
+            public void UpdateTimezone(TimeSpan timezone)
+            {
+                this.SchedulerDateTime.ToOffset(timezone);
+            }
+
+            public ITaskArg GetTasksArgWithId(string taskid)
+            {
+                if (!VerifyTaskExistWithId(taskid))
+                    throw new Exception("This tasks with this id not exist in list");
+
+                return this.Timers[taskid];
+            }
+
+            // -> Custom implementation for get by Username with my CustomTaskArg
+            // -> Use ConvertTaskArg extension methods to easily convert
+            public List<ITaskArg> GetTasksArgWithUsername(string username) 
+            {
+                return this.Timers.Values.Where(taskArg=> taskArg.ConvertTaskArg<CustomTaskArgs>().Username == username).ToList();
+            }
+            //
+          
+
+            public bool GetTasksLaunchedStatusWithId(string taskid)
+            {
+                return GetTasksArgWithId(taskid).Launched;
+            }
+
+            public bool GetTasksFinishedStatusWithId(string taskid)
+            {
+                return GetTasksArgWithId(taskid).Finished;
+            }
+
+            public bool VerifyTaskExistWithId(string taskid)
+            {
+                return this.Timers.ContainsKey(taskid);
+            }
+
+
+            public List<ITaskArg> GetAllTasks() => this.Timers.Values.ToList();
+
+            public CancellationToken GetTaskToken(string taskid)
+            {
+                return GetTasksArgWithId(taskid).CancellationToken.Token;
+            }
         }
 
         struct MyCustomPayload

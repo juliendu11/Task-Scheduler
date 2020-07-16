@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Task programming module with times or date, run a Task action for C# (.net core)
+
+Everything is extensible to implement your own behavior and methods</Description>
+    <PackageProjectUrl>https://github.com/juliendu11/Task-Scheduler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/juliendu11/Task-Scheduler</RepositoryUrl>
+    <Authors>juliendu11</Authors>
+    <Product>SimplyTaskScheduler</Product>
+    <PackageId>SimplyTaskScheduler</PackageId>
   </PropertyGroup>
 
 </Project>
