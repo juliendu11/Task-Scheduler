@@ -236,9 +236,9 @@ public class CustomTaskScheduler : ITaskScheduler
 
     // -> Custom implementation for get by Username with my CustomTaskArg
     // -> Use ConvertTaskArg extension methods to easily convert
-    public ITaskArg GetTasksArgWithUsername(string username) 
+    public List<ITaskArg> GetTasksArgWithUsername(string username) 
     {
-        return this.Timers.Values.First(taskArg=> taskArg.ConvertTaskArg<CustomTaskArgs>().Username == username);
+        return this.Timers.Values.Where(taskArg=> taskArg.ConvertTaskArg<CustomTaskArgs>().Username == username).ToList();
     }
     //
 
