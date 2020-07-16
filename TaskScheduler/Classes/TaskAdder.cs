@@ -9,26 +9,53 @@ namespace TaskScheduler.Classes
 {
     public class TaskAdder
     {
-        private DateTimeOffset startTime;
-        private DateTimeOffset stopTimer;
+        private ITaskScheduler taskScheduler;
+
+        private DateTimeOffset? startTime;
+        private DateTimeOffset? stopTime;
 
         private Models.ITaskArg taskArg;
-        private Action action;
+        private Func<ITaskArg,Task> action;
         private TimeSpan timezone;
 
         private Enums.TaskTimeMode taskTimeMode;
 
-        private TaskScheduler taskScheduler;
+        private Action<ITaskArg> actionForLaunchedStatusChanged;
+        private Action<ITaskArg> actionForFinishedStatusChanged;
 
-        internal TaskAdder(TaskScheduler taskScheduler) 
+        public TaskAdder(ITaskScheduler taskScheduler) 
         {
             this.taskScheduler = taskScheduler;
         }
 
-        public TaskAdder SetHours(TimeSpan startTime, TimeSpan stopTimer)
+        public TaskAdder SetCustomTaskArg(ITaskArg taskArg)
         {
-            this.startTime = DateTimeOffset.UtcNow.ToOffset(startTime);
-            this.stopTimer = DateTimeOffset.UtcNow.ToOffset(stopTimer);
+            this.taskArg = taskArg;
+            return this;
+        }
+
+        public TaskAdder SetHours(string startTime, string stopTime)
+        {
+            if (string.IsNullOrEmpty(startTime) || string.IsNullOrEmpty(stopTime))
+            {
+                throw new Exception(string.IsNullOrEmpty(startTime) ? "startTime argument is empty" : "stopTime argument is empty");
+            }
+            return ConvertAndSetHours(TimeSpan.Parse(startTime), TimeSpan.Parse(stopTime));
+        }
+
+        public TaskAdder SetHours(TimeSpan startTime, TimeSpan stopTime)
+        {
+            return ConvertAndSetHours(startTime, stopTime);
+        }
+
+        private TaskAdder ConvertAndSetHours(TimeSpan startTime, TimeSpan stopTime)
+        {
+            this.startTime = DateTimeOffset.Now;
+            this.stopTime = DateTimeOffset.Now;
+
+            this.startTime = ((DateTimeOffset)this.startTime).Date + startTime;
+            this.stopTime = ((DateTimeOffset)this.stopTime).Date + stopTime;
+
             this.taskTimeMode = Enums.TaskTimeMode.HoursProgram;
             return this;
         }
@@ -36,7 +63,7 @@ namespace TaskScheduler.Classes
         public TaskAdder SetDay(DateTimeOffset startTime, DateTimeOffset stopTimer)
         {
             this.startTime = startTime;
-            this.stopTimer = stopTimer;
+            this.stopTime = stopTimer;
             this.taskTimeMode = Enums.TaskTimeMode.DayProgram;
             return this;
         }
@@ -53,9 +80,21 @@ namespace TaskScheduler.Classes
             return this;
         }
 
-        public TaskAdder SetAction(Action action)
+        public TaskAdder SetAction(Func<ITaskArg,Task> action)
         {
             this.action = action;
+            return this;
+        }
+
+        public TaskAdder LinkFinishedStatus(Action<ITaskArg> action)
+        {
+            this.actionForFinishedStatusChanged = action;
+            return this;
+        }
+
+        public TaskAdder LinkLaunchedStatus(Action<ITaskArg> action)
+        {
+            this.actionForLaunchedStatusChanged = action;
             return this;
         }
 
@@ -63,7 +102,7 @@ namespace TaskScheduler.Classes
         {
             if (this.startTime == null)
                 throw new Exception("No start time added");
-            if (this.stopTimer == null)
+            if (this.stopTime == null)
                 throw new Exception("No stop time added");
             if (this.action == null)
                 throw new Exception("No action added");
@@ -78,24 +117,37 @@ namespace TaskScheduler.Classes
             string newId = Guid.NewGuid().ToString();
 
             if (taskArg == null)
-                taskArg = new Models.TaskArgNoPayload();
+                taskArg = new Models.TaskArgWithPayload<object>(null);
 
-            taskArg.StartTime = this.startTime;
-            taskArg.StopTime = this.stopTimer;
-            taskArg.Action = Task.Factory.StartNew(action, taskArg.CancellationToken.Token, TaskCreationOptions.LongRunning, System.Threading.Tasks.TaskScheduler.Default);
-
+            taskArg.StartTime = (DateTimeOffset)this.startTime;
+            taskArg.StopTime = (DateTimeOffset)this.startTime;
             taskArg.CancellationToken = new CancellationTokenSource();
+
+
+            taskArg.Action = this.action;
+
             taskArg.TaskId = newId;
             taskArg.TaskTimeMode = this.taskTimeMode;
 
             if (this.timezone != null)
             {
+                this.taskScheduler.UpdateTimezone(this.timezone);
                 taskArg.Timezone = this.timezone;
                 taskArg.StartTime.ToOffset(this.timezone);
                 taskArg.StopTime.ToOffset(this.timezone);
             }
 
-            this.taskScheduler.AddNewTask(newId, taskArg);
+            taskArg.ActionWhenFinishedChanged = this.actionForFinishedStatusChanged;
+            taskArg.ActionWhenLaunchedChanged = this.actionForLaunchedStatusChanged;
+
+            this.AddNewTask();
+        }
+
+
+        private void AddNewTask()
+        {
+            this.taskScheduler.TimerCreator.SetUpTimers(taskArg);
+            this.taskScheduler.Timers.Add(taskArg.TaskId, taskArg);
         }
     }
 }

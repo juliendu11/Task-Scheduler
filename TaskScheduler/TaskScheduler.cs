@@ -1,97 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TaskScheduler.Models;
 
 namespace TaskScheduler
 {
-    public class TaskScheduler
+    public class TaskScheduler :ITaskScheduler
     {
-        internal Dictionary<string, ITaskArg> timers;
+        public Dictionary<string, ITaskArg> Timers { get; private set; }
         public DateTimeOffset SchedulerDateTime { get; internal set; }
 
-        public Classes.TaskAdder TaskAdder { get; }
+        private Action linkTasksLaunched;
+        private Action linkTasksFinished;
 
-        private Classes.TimerCreator timerCreator;
-
-        public TaskScheduler()
+        public Classes.TaskAdder TaskAdder 
         {
-            this.timers = new Dictionary<string, ITaskArg>();
-            this.SchedulerDateTime = DateTimeOffset.UtcNow;
-            this.TaskAdder = new Classes.TaskAdder(this);
-            this.timerCreator = new Classes.TimerCreator(this);
+            get
+            {
+                return new Classes.TaskAdder(this);
+            }
         }
+
+        public Classes.TimerCreator TimerCreator { get; private set; }
+        public Options Options { get; private set; }
+
+
+        public TaskScheduler(Action linkTasksLaunched, Action linkTasksFinished)
+        {
+            this.Timers = new Dictionary<string, ITaskArg>();
+            this.SchedulerDateTime = DateTimeOffset.Now;
+            this.TimerCreator = new Classes.TimerCreator(this);
+            this.Options = new Options();
+            this.linkTasksLaunched = linkTasksLaunched;
+            this.linkTasksFinished = linkTasksFinished;
+
+        }
+
+        
 
         public void UpdateTimezone(TimeSpan timezone)
         {
             this.SchedulerDateTime.ToOffset(timezone);
         }
 
-        public ITaskArg GetTasksWithId(string taskid)
+        public ITaskArg GetTasksArgWithId(string taskid)
         {
             if (!VerifyTaskExistWithId(taskid))
                 throw new Exception("This tasks with this id not exist in list");
 
-            return this.timers[taskid];
+            return this.Timers[taskid];
         }
 
         public bool GetTasksLaunchedStatusWithId(string taskid)
         {
-            return GetTasksWithId(taskid).Launched;
+            return GetTasksArgWithId(taskid).Launched;
         }
 
         public bool GetTasksFinishedStatusWithId(string taskid)
         {
-            return GetTasksWithId(taskid).Finished;
+            return GetTasksArgWithId(taskid).Finished;
         }
 
         public bool VerifyTaskExistWithId(string taskid)
         {
-            return this.timers.ContainsKey(taskid);
+            return this.Timers.ContainsKey(taskid);
         }
 
-        public Dictionary<string, ITaskArg> GetAllTasks => this.timers.ToDictionary(entry => entry.Key,entry => entry.Value);
+        public List<ITaskArg> GetAllTasks() => this.Timers.Values.ToList();
 
-        internal void AddNewTask(string id, ITaskArg taskArg)
+        public CancellationToken GetTaskToken(string taskid)
         {
-            timerCreator.SetUpTimers(taskArg);
-            this.timers.Add(id, taskArg);
-        }
-
-        internal void DeleteTask(string taskID)
-        {
-            if (this.timers.ContainsKey(taskID))
-            {
-                this.timers[taskID].CancellationToken.Cancel();
-
-                if (this.timers[taskID].StartTimer != null)
-                {
-                    DeleteTaskStartTimer(taskID);
-                }
-                if (this.timers[taskID].StopTimer != null)
-                {
-                    DeleteTaskStopTimer(taskID);
-                }
-
-                timers.Remove(taskID);
-            }
-        }
-
-        private void DeleteTaskStopTimer(string taskID)
-        {
-            this.timers[taskID].StopTimer.Dispose();
-            if (this.timers[taskID].StopTimer != null)
-                this.timers[taskID].StopTimer = null;
-        }
-
-        private void DeleteTaskStartTimer(string taskID)
-        {
-            this.timers[taskID].StartTimer.Dispose();
-            if (this.timers[taskID].StartTimer != null)
-                this.timers[taskID].StartTimer = null;
+            return GetTasksArgWithId(taskid).CancellationToken.Token;
         }
     }
 }

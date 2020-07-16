@@ -12,7 +12,7 @@ namespace TaskScheduler.Models
 
         public CancellationTokenSource CancellationToken { get; set; }
 
-        public Task Action { get; set; }
+        public Func<ITaskArg,Task> Action { get; set; }
 
         public TimeSpan? Timezone { get; set; }
 
@@ -25,6 +25,10 @@ namespace TaskScheduler.Models
         public Timer StartTimer { get;  set; }
 
         public Timer StopTimer { get;   set; }
+
+        public Action<ITaskArg> ActionWhenLaunchedChanged { get; set; }
+
+        public Action<ITaskArg> ActionWhenFinishedChanged { get; set; }
 
         public bool Launched { get; set; }
         public bool Finished { get; set; }
