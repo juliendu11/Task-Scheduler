@@ -3,6 +3,12 @@ Task programming module with times or date, run a Task action for C# (.net core)
 
 #### Everything is extensible to implement your own behavior and methods
 
+## Install
+
+```
+PM> Install-Package SimplyTaskScheduler -Version 1.0.0
+```
+
 ## How to use ? 
 
 Create a instance of ITaskScheduler, I advise you to create only one instance for the whole application
