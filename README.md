@@ -6,7 +6,7 @@ Task programming module with times or date, run a Task action for C# (.net core)
 ## Install
 
 ```
-PM> Install-Package SimplyTaskScheduler -Version 1.0.0
+PM> Install-Package SimplyTaskScheduler -Version 1.1.0
 ```
 
 ## How to use ? 
@@ -271,6 +271,19 @@ public class CustomTaskScheduler : ITaskScheduler
     {
         return GetTasksArgWithId(taskid).CancellationToken.Token;
     }
+    
+     public void StopAndDeleteAllTasks()
+     {
+        if (this.Timers.Count != 0)
+        this.Timers.Keys.ToList().ForEach(taskid => this.StopAndDeleteTask(taskid));
+     }
+
+      public void StopAndDeleteTask(string taskId)
+      {
+        if (!VerifyTaskExistWithId(taskId))
+        throw new Exception("This tasks with this id not exist in list");
+        this.TimerCreator.DeleteTask(taskId, true);
+      }
 }
 ```
 
@@ -286,3 +299,9 @@ static void Main(string[] args)
                 .Build();
 }
 ```
+
+## Stop and Delete tasks
+
+Stop and Delete task with ```taskScheduler.StopAndDeleteTask(taskid)``` for one task
+
+Stop and Delete tasks with ```taskScheduler.StopAndDeleteAllTasks()``` for all tasks in List
