@@ -42,9 +42,9 @@ static void NewTaskSimpleTaskArgs()
             int i = 0;
             while (!token.IsCancellationRequested)
             {
-            await Task.Delay(TimeSpan.FromSeconds(3), token);
-            Console.WriteLine("Hello: " + i);
-            i++;
+              await Task.Delay(TimeSpan.FromSeconds(3), token);
+              Console.WriteLine("Hello: " + i);
+              i++;
             }
         })
         .SetTimezone(DateTimeOffset.Now.Offset)//Optional
@@ -71,9 +71,9 @@ static void NewTaskSimpleTaskArgsWithPayload()
             int i = 0;
             while (!token.IsCancellationRequested)
             {
-            await Task.Delay(TimeSpan.FromSeconds(3), token);
-            Console.WriteLine("Hello: " + i);
-            i++;
+              await Task.Delay(TimeSpan.FromSeconds(3), token);
+              Console.WriteLine("Hello: " + i);
+              i++;
             }
         })
         .SetPayload(new MyCustomPayload { UserId = Guid.NewGuid().ToString(), Username = "Bob" })//Optional
@@ -81,8 +81,8 @@ static void NewTaskSimpleTaskArgsWithPayload()
         .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })//Optional
         .LinkLaunchedStatus(taskArg =>
             {
-            var taskArgWithPayload = taskArg.ConvertTaskArg<TaskArgWithPayload<MyCustomPayload>>(); //Convert TaskArg to payload object (MyCustomPayload) because is interface
-            Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Payload.Username}");
+              var taskArgWithPayload = taskArg.ConvertTaskArg<TaskArgWithPayload<MyCustomPayload>>(); //Convert TaskArg to payload object (MyCustomPayload) because is interface
+              Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Payload.Username}");
             })//Optional
           
         .AddTask();
@@ -109,22 +109,22 @@ static void NewTaskWithCustomTaskArg()
             int i = 0;
             while (!token.IsCancellationRequested)
             {
-            await Task.Delay(TimeSpan.FromSeconds(3), token);
-            Console.WriteLine("Hello: " + i);
-            i++;
+              await Task.Delay(TimeSpan.FromSeconds(3), token);
+              Console.WriteLine("Hello: " + i);
+              i++;
             }
         })
         .SetTimezone(DateTimeOffset.Now.Offset)//Optional
         .SetCustomTaskArg(new CustomTaskArgs { Username = "Bob", UserId = Guid.NewGuid().ToString() }) //Optional
         .LinkFinishedStatus(taskArg =>
             {
-            var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>(); //Convert TaskArg to custom TaskArg object (CustomTaskArgs) because is interface
-            Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
+              var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>(); //Convert TaskArg to custom TaskArg object (CustomTaskArgs) because is interface
+              Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
             })//Optional
         .LinkLaunchedStatus(taskArg =>
             {
-            var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>(); //Convert TaskArg to custom TaskArg object (CustomTaskArgs) because is interface
-            Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
+              var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>(); //Convert TaskArg to custom TaskArg object (CustomTaskArgs) because is interface
+              Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
             })//Optional
           
         .AddTask();
