@@ -1,3 +1,6 @@
+
+[![Build Status](https://travis-ci.org/juliendu11/Task-Scheduler.svg?branch=master)](https://travis-ci.org/github/juliendu11/Task-Scheduler)
+
 # Task scheduler
 Task programming module with times or date, run a Task action for C# (.net core)
 
