@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskScheduler.Classes;
 using TaskScheduler.Models;
 
 namespace TaskScheduler

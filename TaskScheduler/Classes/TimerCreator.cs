@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskScheduler.CustomExceptions;
+using TaskScheduler.Models;
 
 namespace TaskScheduler.Classes
 {
@@ -17,12 +19,22 @@ namespace TaskScheduler.Classes
 
         public void SetUpTimers(Models.ITaskArg taskArg)
         {
+            VerifyTaskTimers(taskArg);
+
             taskArg.CancellationToken.Token.Register(() => taskArg.Launched = false);
 
             taskArg.StartTimer = CreateTimer(taskArg.StartTime, taskScheduler.SchedulerDateTime, () => LaunchTask(taskArg));
             taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => DeleteTask(taskArg.TaskId));
         }
 
+        private void VerifyTaskTimers(ITaskArg taskArg)
+        {
+            if (taskArg.StartTime < this.taskScheduler.SchedulerDateTime)
+                throw new SchedulerTimeError("Startup time is smaller than TaskScheduler date (now date)");
+
+            if (taskArg.StopTime < taskArg.StartTime)
+                throw new SchedulerTimeError("End time is greater than start date");
+        }
 
         private Timer CreateTimer(DateTimeOffset timer, DateTimeOffset current, Action toRun)
         {

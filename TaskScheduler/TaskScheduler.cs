@@ -17,12 +17,13 @@ namespace TaskScheduler
         private Action linkTasksLaunched;
         private Action linkTasksFinished;
 
+        private Classes.TaskAdder taskAdder;
         public Classes.TaskAdder TaskAdder 
         {
             get
             {
                 SchedulerDateTime.ToOffset(defaultTimezone);
-                return new Classes.TaskAdder(this);
+                return taskAdder.CleanUp();
             }
         }
 
@@ -39,7 +40,7 @@ namespace TaskScheduler
             this.Options = new Options();
             this.linkTasksLaunched = linkTasksLaunched;
             this.linkTasksFinished = linkTasksFinished;
-
+            this.taskAdder = new Classes.TaskAdder(this);
         }
         
         public void UpdateTimezone(TimeSpan timezone)

@@ -59,7 +59,7 @@ namespace RealTest
             string newTaskId = "";
 
             newTaskId = taskScheduler.TaskAdder
-                .SetHours("14:00", "15:00") //In 24hr format
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format
                 .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
                 .SetAction(async (taskArg) =>
                 {
@@ -83,7 +83,7 @@ namespace RealTest
             string newTaskId = "";
 
             newTaskId = taskScheduler.TaskAdder
-                .SetHours("14:00", "15:00") //In 24hr format
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format
                 .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
                 .SetAction(async (taskArg) =>
                 {
@@ -113,7 +113,7 @@ namespace RealTest
             var nowDate = DateTimeOffset.Now;
 
             newTaskId = taskScheduler.TaskAdder
-                .SetHours("14:00", "15:00") //In 24hr format
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format
                  .SetDay(nowDate.AddDays(2), nowDate.AddDays(4)) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
                 .SetAction(async (taskArg) =>
                 {
@@ -186,19 +186,23 @@ namespace RealTest
             public string UserId { get; set; }
         }
 
-        public class CustomTaskScheduler : ITaskScheduler
+        class CustomTaskScheduler : ITaskScheduler
         {
+            private TimeSpan defaultTimezone;
+
             public Dictionary<string, ITaskArg> Timers { get; private set; }
             public DateTimeOffset SchedulerDateTime { get; internal set; }
 
             private Action linkTasksLaunched;
             private Action linkTasksFinished;
 
+            private TaskScheduler.Classes.TaskAdder taskAdder;
             public TaskScheduler.Classes.TaskAdder TaskAdder
             {
                 get
                 {
-                    return new TaskScheduler.Classes.TaskAdder(this);
+                    SchedulerDateTime.ToOffset(defaultTimezone);
+                    return taskAdder.CleanUp();
                 }
             }
 
@@ -210,11 +214,12 @@ namespace RealTest
             {
                 this.Timers = new Dictionary<string, ITaskArg>();
                 this.SchedulerDateTime = DateTimeOffset.Now;
+                this.defaultTimezone = DateTimeOffset.Now.Offset;
                 this.TimerCreator = new TaskScheduler.Classes.TimerCreator(this);
                 this.Options = new Options();
                 this.linkTasksLaunched = linkTasksLaunched;
                 this.linkTasksFinished = linkTasksFinished;
-
+                this.taskAdder = new TaskScheduler.Classes.TaskAdder(this);
             }
 
 

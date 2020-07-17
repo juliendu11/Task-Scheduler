@@ -16,64 +16,6 @@ namespace TaskScheduler.Classes.Tests
     {
         [TestMethod()]
         [Description("Test AddTask() function")]
-        public void Should_Create_New_Task_With_SetHours_But_StartTime_Not_Set_Return_Exception_Error()
-        {
-            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-               .Build();
-
-            Assert.ThrowsException<Exception>(() => 
-            {
-                var newTaskId = taskScheduler.TaskAdder
-                 .SetHours(null, DateTimeOffset.Now.AddMinutes(3).TimeOfDay.ToString())
-                 .SetAction(async (x) =>
-                 {
-                     Console.WriteLine(x.TaskId);
-                 })
-                 .AddTask();
-            });
-        }
-
-        [TestMethod()]
-        [Description("Test AddTask() function")]
-        public void Should_Create_New_Task_With_SetHours_But_StopTime_Not_Set_Return_Exception_Error()
-        {
-            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-               .Build();
-
-            Assert.ThrowsException<Exception>(() =>
-            {
-                var newTaskId = taskScheduler.TaskAdder
-                 .SetHours(DateTimeOffset.Now.AddMinutes(3).TimeOfDay.ToString(), null)
-                 .SetAction(async (x) =>
-                 {
-                     Console.WriteLine(x.TaskId);
-                 })
-                 .AddTask();
-            });
-        }
-
-
-        [TestMethod()]
-        [Description("Test AddTask() function")]
-        public void Should_Create_New_Task_With_SetHours_But_StartTime_And_StopTime_Not_Set_Return_Exception_Error()
-        {
-            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-               .Build();
-
-            Assert.ThrowsException<Exception>(() =>
-            {
-                var newTaskId = taskScheduler.TaskAdder
-                 .SetHours(null, null)
-                 .SetAction(async (x) =>
-                 {
-                     Console.WriteLine(x.TaskId);
-                 })
-                 .AddTask();
-            });
-        }
-
-        [TestMethod()]
-        [Description("Test AddTask() function")]
         public void Should_Create_New_Task_But_Action_Not_Set_Return_Exception_Error()
         {
             var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
@@ -82,7 +24,7 @@ namespace TaskScheduler.Classes.Tests
             Assert.ThrowsException<Exception>(() =>
             {
                 var newTaskId = taskScheduler.TaskAdder
-                 .SetHours(DateTimeOffset.Now.AddMinutes(3).TimeOfDay.ToString(), DateTimeOffset.Now.AddMinutes(5).TimeOfDay.ToString())
+                 .SetHours(DateTimeOffset.Now.AddMinutes(3).TimeOfDay, DateTimeOffset.Now.AddMinutes(5).TimeOfDay)
                  .AddTask();
             });
         }
@@ -127,7 +69,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetAction(async (x) =>
                 {
                     Console.WriteLine(x.TaskId);
@@ -144,7 +86,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetAction(async (x) =>
                 {
                     Console.WriteLine(x.TaskId);
@@ -161,7 +103,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetPayload<string>("hello")
                 .SetAction(async (x) =>
                 {
@@ -179,7 +121,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetPayload<string>("hello")
                 .SetAction(async (x) =>
                 {
@@ -203,7 +145,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetCustomTaskArg(new CustomTaskArgs {Username = "Bob", UserId = Guid.NewGuid().ToString() })
                 .SetAction(async (x) =>
                 {
@@ -221,7 +163,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours("16:00", "18:00")
+               .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
                 .SetCustomTaskArg(new CustomTaskArgs { Username = "Bob", UserId = Guid.NewGuid().ToString() })
                 .SetAction(async (x) =>
                 {

@@ -1,10 +1,10 @@
 Test TaskAdder recréer à chaque tâche OK
 
-Test si l'action est lancé à l'heure voulu 
+Test si l'action est lancé à l'heure voulu  OK
 Test si la tâche est fini à l'heure voulu
 Test si la tâche est supprimer à l'heure voulu
 
-Test si l'action est lancé au DateTime voulu
+Test si l'action est lancé au DateTime voulu OK
 Test si la tâche est fini au DateTime voulu
 Test si la tâche est supprimer au DateTime voulu
 

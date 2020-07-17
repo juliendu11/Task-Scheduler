@@ -24,20 +24,6 @@ namespace TaskScheduler.Tests
         }
 
         [TestMethod()]
-        public void Should_Create_New_Instance_Of_TaskAdder_Whenever_We_Create_New_Task()
-        {
-            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-               .Build();
-
-            var firstTaskAdder = taskScheduler.TaskAdder;
-            var secondTaskAdder = taskScheduler.TaskAdder;
-
-
-            Assert.AreEqual(firstTaskAdder, firstTaskAdder);
-            Assert.AreNotEqual(firstTaskAdder, secondTaskAdder);
-        }
-
-        [TestMethod()]
         public void Should_Update_Scheduler_DateTime_Property_With_New_Timezone()
         {
             var taskScheduler = TaskSchedulerBuilder.CreateBuilder()

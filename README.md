@@ -6,7 +6,7 @@ Task programming module with times or date, run a Task action for C# (.net core)
 ## Install
 
 ```
-PM> Install-Package SimplyTaskScheduler -Version 1.1.0
+PM> Install-Package SimplyTaskScheduler -Version 1.1.1
 ```
 
 ## How to use ? 
@@ -34,7 +34,7 @@ static void NewTaskSimpleTaskArgs()
       string newTaskId = "";
 
       newTaskId = taskScheduler.TaskAdder
-        .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
+        .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format, it's for current Day
         .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
@@ -63,7 +63,7 @@ static void NewTaskSimpleTaskArgsWithPayload()
       string newTaskId = "";
 
       newTaskId = taskScheduler.TaskAdder
-        .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
+        .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format, it's for current Day
         .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
@@ -101,7 +101,7 @@ static void NewTaskWithCustomTaskArg()
       string newTaskId = "";
 
       newTaskId = taskScheduler.TaskAdder
-        .SetHours("14:00", "15:00") //In 24hr format, it's for current Day
+        .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) //In 24hr format, it's for current Day
         .SetDay(DateTimeOffset.Parse("2020-07-16 16:00:00"), DateTimeOffset.Parse("2020-07-18 12:00:00")) //Or user DateTime for set with specific date. Do not use SetHours and SetDay at the same time !!!
         .SetAction(async (taskArg) =>
         {
@@ -203,14 +203,21 @@ class CustomTaskArgs : ITaskArg
 ```c#
 public class CustomTaskScheduler : ITaskScheduler
 {
+   private TimeSpan defaultTimezone;
+
     public Dictionary<string, ITaskArg> Timers { get; private set; }
     public DateTimeOffset SchedulerDateTime { get; internal set; }
 
+    private Action linkTasksLaunched;
+    private Action linkTasksFinished;
+
+    private TaskScheduler.Classes.TaskAdder taskAdder;
     public TaskScheduler.Classes.TaskAdder TaskAdder
     {
         get
         {
-            return new TaskScheduler.Classes.TaskAdder(this);
+          SchedulerDateTime.ToOffset(defaultTimezone);
+          return taskAdder.CleanUp();
         }
     }
 
@@ -218,12 +225,16 @@ public class CustomTaskScheduler : ITaskScheduler
     public Options Options { get; private set; }
 
 
-    public CustomTaskScheduler()
+    public CustomTaskScheduler(Action linkTasksLaunched, Action linkTasksFinished)
     {
         this.Timers = new Dictionary<string, ITaskArg>();
         this.SchedulerDateTime = DateTimeOffset.Now;
+        this.defaultTimezone = DateTimeOffset.Now.Offset;
         this.TimerCreator = new TaskScheduler.Classes.TimerCreator(this);
         this.Options = new Options();
+        this.linkTasksLaunched = linkTasksLaunched;
+        this.linkTasksFinished = linkTasksFinished;
+        this.taskAdder = new TaskScheduler.Classes.TaskAdder(this);
     }
 
 

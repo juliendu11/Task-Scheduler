@@ -26,21 +26,31 @@ namespace TaskScheduler.Classes
         public TaskAdder(ITaskScheduler taskScheduler) 
         {
             this.taskScheduler = taskScheduler;
+            this.timezone = taskScheduler.SchedulerDateTime.Offset;
         }
+
+        public TaskAdder CleanUp()
+        {
+            this.startTime = null;
+            this.stopTime = null;
+
+            this.taskArg = null;
+            this.action = null;
+
+            this.timezone = this.taskScheduler.SchedulerDateTime.Offset;
+            this.taskTimeMode = default;
+
+            this.actionForLaunchedStatusChanged = null;
+            this.actionForFinishedStatusChanged = null;
+
+            return this;
+        }
+
 
         public TaskAdder SetCustomTaskArg(ITaskArg taskArg)
         {
             this.taskArg = taskArg;
             return this;
-        }
-
-        public TaskAdder SetHours(string startTime, string stopTime)
-        {
-            if (string.IsNullOrEmpty(startTime) || string.IsNullOrEmpty(stopTime))
-            {
-                throw new Exception(string.IsNullOrEmpty(startTime) ? "startTime argument is empty" : "stopTime argument is empty");
-            }
-            return ConvertAndSetHours(TimeSpan.Parse(startTime), TimeSpan.Parse(stopTime));
         }
 
         public TaskAdder SetHours(TimeSpan startTime, TimeSpan stopTime)
@@ -120,7 +130,7 @@ namespace TaskScheduler.Classes
                 taskArg = new Models.TaskArgWithPayload<object>(null);
 
             taskArg.StartTime = (DateTimeOffset)this.startTime;
-            taskArg.StopTime = (DateTimeOffset)this.startTime;
+            taskArg.StopTime = (DateTimeOffset)this.stopTime;
             taskArg.CancellationToken = new CancellationTokenSource();
 
 
