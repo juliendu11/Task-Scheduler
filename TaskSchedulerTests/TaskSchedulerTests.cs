@@ -239,6 +239,35 @@ namespace TaskScheduler.Tests
         }
 
         [TestMethod()]
+        public void Should_Delete_And_Stop_Task_Send_Valid_Taskid_2_Task_In_The_List_There_Must_Be_Only_1()
+        {
+            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+             .Build();
+
+
+            var task1 = BuildFakeTaskArg();
+            var task2 = BuildFakeTaskArg();
+
+            taskScheduler.Timers.Add(task1.TaskId, task1);
+            taskScheduler.Timers.Add(task2.TaskId, task2);
+
+            taskScheduler.StopAndDeleteTask(task1.TaskId);
+
+            Assert.AreEqual(1, taskScheduler.Timers.Count);
+        }
+
+        private Models.TaskArgWithPayload<object> BuildFakeTaskArg()
+        {
+            var task1Arg = new Models.TaskArgWithPayload<object>(null)
+            {
+                TaskId = Guid.NewGuid().ToString(),
+                CancellationToken = new System.Threading.CancellationTokenSource(),
+            };
+
+            return task1Arg;
+        }
+
+        [TestMethod()]
         public void Should_Delete_All_Tasks_With_2_Same_Task_Id_In_List_Return_Timers_List_0_Task()
         {
             var taskScheduler = TaskSchedulerBuilder.CreateBuilder()

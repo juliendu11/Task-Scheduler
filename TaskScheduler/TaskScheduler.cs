@@ -48,6 +48,11 @@ namespace TaskScheduler
             this.SchedulerDateTime.ToOffset(timezone);
         }
 
+        public void UpdateTaskSchedulerDate(DateTimeOffset newDate)
+        {
+            this.SchedulerDateTime = newDate;
+        }
+
         public ITaskArg GetTasksArgWithId(string taskid)
         {
             if (!VerifyTaskExistWithId(taskid))
@@ -88,7 +93,8 @@ namespace TaskScheduler
         {
             if (!VerifyTaskExistWithId(taskId))
                 throw new Exception("This tasks with this id not exist in list");
-            this.TimerCreator.DeleteTask(taskId, true);
+            this.TimerCreator.DeleteTask(taskId);
+            this.Timers.Remove(taskId);
         }
     }
 }

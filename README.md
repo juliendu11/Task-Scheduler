@@ -144,7 +144,23 @@ static void NewTaskWithCustomTaskArg()
  - You can manage the timezone with SetTimezone, the create task will be created in relation to this timezone, if no timezone is specified, the timezone will be from the current system
  - SetAction must be a task action, you must put "async" if you put a synchronous action ("async" is required)
  - If you put an asynchronous action or a loop for SetAction, use the taskArg token as in the examples above, this will force the task to stop once the schedule has ended
- 
+
+- If you use SetHours and the day ends in 15 minutes and you put a schedule + 20 minutes celà will be problem because it will not take the next day but only for the current day !!
+
+example:
+
+```
+Today date : "2020-07-18 23:45"
+
+.SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) -> Error
+
+```
+
+For proper functioning do not use SetHours or do not put a Date + Add as the example above or best option is SetDay. Especially if you are using the timezone
+
+
+
+
 ## LinkFinishedStatus and LinkLaunchedStatus
  
 This is optional, you do not have to implement LinkFinishedStatus and LinkLaunchedStatus.
@@ -296,7 +312,9 @@ public class CustomTaskScheduler : ITaskScheduler
       {
         if (!VerifyTaskExistWithId(taskId))
         throw new Exception("This tasks with this id not exist in list");
-        this.TimerCreator.DeleteTask(taskId, true);
+
+        this.TimerCreator.DeleteTask(taskId);
+        this.Timers.Remove(taskId);
       }
 }
 ```

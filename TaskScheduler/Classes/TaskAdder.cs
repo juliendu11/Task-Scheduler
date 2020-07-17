@@ -117,12 +117,13 @@ namespace TaskScheduler.Classes
             if (this.action == null)
                 throw new Exception("No action added");
 
-            GenerateNewTask();
+            this.GenerateNewTaskArg();
+            this.AddNewTask();
 
             return taskArg.TaskId;
         }
 
-        private void GenerateNewTask()
+        private void GenerateNewTaskArg()
         {
             string newId = Guid.NewGuid().ToString();
 
@@ -149,15 +150,13 @@ namespace TaskScheduler.Classes
 
             taskArg.ActionWhenFinishedChanged = this.actionForFinishedStatusChanged;
             taskArg.ActionWhenLaunchedChanged = this.actionForLaunchedStatusChanged;
-
-            this.AddNewTask();
         }
 
 
         private void AddNewTask()
         {
-            this.taskScheduler.TimerCreator.SetUpTimers(taskArg);
             this.taskScheduler.Timers.Add(taskArg.TaskId, taskArg);
+            this.taskScheduler.TimerCreator.SetUpTimers(taskArg.TaskId);
         }
     }
 }

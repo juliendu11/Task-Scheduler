@@ -16,6 +16,8 @@ namespace TaskScheduler
 
         void UpdateTimezone(TimeSpan timezone);
 
+        void UpdateTaskSchedulerDate(DateTimeOffset newDate);
+
         ITaskArg GetTasksArgWithId(string taskid);
 
         bool GetTasksLaunchedStatusWithId(string taskid);

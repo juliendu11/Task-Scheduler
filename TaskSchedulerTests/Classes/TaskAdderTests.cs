@@ -69,7 +69,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetAction(async (x) =>
                 {
                     Console.WriteLine(x.TaskId);
@@ -86,7 +86,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetAction(async (x) =>
                 {
                     Console.WriteLine(x.TaskId);
@@ -103,7 +103,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetPayload<string>("hello")
                 .SetAction(async (x) =>
                 {
@@ -121,7 +121,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetPayload<string>("hello")
                 .SetAction(async (x) =>
                 {
@@ -145,7 +145,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-                .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetCustomTaskArg(new CustomTaskArgs {Username = "Bob", UserId = Guid.NewGuid().ToString() })
                 .SetAction(async (x) =>
                 {
@@ -163,7 +163,7 @@ namespace TaskScheduler.Classes.Tests
                .Build();
 
             var newTaskId = taskScheduler.TaskAdder
-               .SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay)
+                .SetDay(DateTimeOffset.Now.AddMinutes(20), DateTimeOffset.Now.AddMinutes(50))
                 .SetCustomTaskArg(new CustomTaskArgs { Username = "Bob", UserId = Guid.NewGuid().ToString() })
                 .SetAction(async (x) =>
                 {

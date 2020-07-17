@@ -1,15 +1,15 @@
 Test TaskAdder recréer à chaque tâche OK
 
 Test si l'action est lancé à l'heure voulu  OK
-Test si la tâche est fini à l'heure voulu
-Test si la tâche est supprimer à l'heure voulu
+Test si la tâche est fini à l'heure voulu OK
+Test si la tâche est supprimer à l'heure voulu OK
 
 Test si l'action est lancé au DateTime voulu OK
-Test si la tâche est fini au DateTime voulu
-Test si la tâche est supprimer au DateTime voulu
+Test si la tâche est fini au DateTime voulu OK
+Test si la tâche est supprimer au DateTime voulu OK
 
-Test si on est bien notifié quand on est abonné au status launched
-Test si on est bien notifié quand on est abonné au status finished
+Test si on est bien notifié quand on est abonné au status launched OK
+Test si on est bien notifié quand on est abonné au status finished OK
 
 Test si l'action est lancé à l"heure voulu avec une timezone de + 2 heure de la notre
 Test si la tâche est fini à l'heure voulu avec une timezone de + 2 heure de la notre
