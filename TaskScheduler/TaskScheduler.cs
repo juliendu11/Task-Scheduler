@@ -45,11 +45,13 @@ namespace TaskScheduler
         
         public void UpdateTimezone(TimeSpan timezone)
         {
+            this.defaultTimezone = timezone;
             this.SchedulerDateTime.ToOffset(timezone);
         }
 
         public void UpdateTaskSchedulerDate(DateTimeOffset newDate)
         {
+            this.defaultTimezone = newDate.Offset;
             this.SchedulerDateTime = newDate;
         }
 
