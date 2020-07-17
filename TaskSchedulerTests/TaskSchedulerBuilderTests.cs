@@ -181,7 +181,7 @@ namespace TaskScheduler.Tests
                 if (!VerifyTaskExistWithId(taskId))
                     throw new Exception("This tasks with this id not exist in list");
 
-                this.TimerCreator.DeleteTask(taskId);
+                this.TimerCreator.ManageTaskTermination(this.Timers[taskId]);
                 this.Timers.Remove(taskId);
             }
         }

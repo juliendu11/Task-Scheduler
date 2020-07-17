@@ -26,7 +26,7 @@ namespace TaskScheduler.Classes
             taskArg.CancellationToken.Token.Register(() => taskArg.Launched = false);
 
             taskArg.StartTimer = CreateTimer(taskArg.StartTime, taskScheduler.SchedulerDateTime, () => LaunchTask(taskArg));
-            taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => DeleteTask(taskArg.TaskId));
+            taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => ManageTaskTermination(taskArg));
         }
 
         private void VerifyTaskTimers(ITaskArg taskArg)
@@ -58,46 +58,45 @@ namespace TaskScheduler.Classes
             await Task.Factory.StartNew(async () =>
             {
                 await taskArg.Action.Invoke(taskArg);
-                DeleteTask(taskArg.TaskId);
+                ManageTaskTermination(taskArg);
                 taskArg.Finished = true; //The task could be finished before the time ended
 
             }, taskArg.CancellationToken.Token, TaskCreationOptions.LongRunning, System.Threading.Tasks.TaskScheduler.Default);
         }
 
 
-        public void DeleteTask(string taskID)
+        public void ManageTaskTermination(ITaskArg taskArg)
         {
-            if (this.taskScheduler.Timers.ContainsKey(taskID))
-            {
-                if (this.taskScheduler.Timers[taskID].CancellationToken != null)
-                    this.taskScheduler.Timers[taskID].CancellationToken.Cancel();
+            if (taskArg.CancellationToken != null)
+                taskArg.CancellationToken.Cancel();
 
-                DeleteTaskStartTimer(taskID);
-                DeleteTaskStopTimer(taskID);
-                DeleteTaskIfOptionIsEnabled(taskID);
-            }
+            DeleteTaskStartTimer(taskArg);
+            DeleteTaskStopTimer(taskArg);
+            DeleteTaskIfOptionIsEnabled(taskArg);
         }
 
-        private void DeleteTaskIfOptionIsEnabled(string taskID)
+
+        private void DeleteTaskStartTimer(ITaskArg taskArg)
         {
-            if (this.taskScheduler.Options.DeleteTaskAfterCompleted)
-                taskScheduler.Timers.Remove(taskID);
+            if (taskArg.StartTimer != null)
+                taskArg.StartTimer.Dispose();
+            if (taskArg.StartTimer != null)
+                taskArg.StartTimer = null;
         }
 
-        private void DeleteTaskStopTimer(string taskID)
+        private void DeleteTaskStopTimer(ITaskArg taskArg)
         {
-            if (this.taskScheduler.Timers[taskID].StopTimer != null)
-                this.taskScheduler.Timers[taskID].StopTimer.Dispose();
-            if (this.taskScheduler.Timers[taskID].StopTimer != null)
-                this.taskScheduler.Timers[taskID].StopTimer = null;
+            if (taskArg.StopTimer != null)
+                taskArg.StopTimer.Dispose();
+            if (taskArg.StopTimer != null)
+                taskArg.StopTimer = null;
         }
 
-        private void DeleteTaskStartTimer(string taskID)
+        private void DeleteTaskIfOptionIsEnabled(ITaskArg taskArg)
         {
-            if (this.taskScheduler.Timers[taskID].StartTimer != null)
-                this.taskScheduler.Timers[taskID].StartTimer.Dispose();
-            if (this.taskScheduler.Timers[taskID].StartTimer != null)
-                this.taskScheduler.Timers[taskID].StartTimer = null;
+            if (this.taskScheduler.Options.DeleteTaskAfterCompleted 
+                && taskScheduler.Timers.ContainsKey(taskArg.TaskId))
+                taskScheduler.Timers.Remove(taskArg.TaskId);
         }
     }
 }
