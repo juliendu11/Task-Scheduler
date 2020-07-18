@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using TaskScheduler;
@@ -20,7 +21,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                 .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
                    .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(500).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(10).TimeOfDay)
@@ -44,7 +45,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-               taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
                     .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(500), taskScheduler.SchedulerDateTime.AddSeconds(10))
@@ -68,7 +69,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                 .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
                    .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(200).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
@@ -93,7 +94,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
                     .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
@@ -121,7 +122,7 @@ namespace TaskSchedulerTests
 
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
                    .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(300).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
@@ -148,7 +149,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
@@ -178,7 +179,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
@@ -210,7 +211,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
@@ -242,7 +243,7 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                .Build();
 
-                taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.Parse("2020-07-18 15:00:00", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+                SetSchedulerDate(taskScheduler); // -> control scheduler datetime for avoid end-of-day date issues
 
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
@@ -262,6 +263,12 @@ namespace TaskSchedulerTests
 
                 Assert.IsFalse(notify);
             }).GetAwaiter().GetResult();
+        }
+
+
+        private void SetSchedulerDate(ITaskScheduler taskScheduler)
+        {
+            taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.ParseExact("2020-07-18 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
         }
     }
 }

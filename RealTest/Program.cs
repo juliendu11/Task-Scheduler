@@ -8,6 +8,7 @@ using TaskScheduler.Enums;
 using TaskScheduler.Helpers;
 using System.Collections.Generic;
 using TaskScheduler.Classes;
+using System.Globalization;
 
 namespace RealTest
 {
@@ -18,36 +19,38 @@ namespace RealTest
         {
             Console.WriteLine("Hello World!");
 
-            taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-                .Build();
+            Console.WriteLine(DateTimeOffset.ParseExact("2020-07-18 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+
+            //taskScheduler = TaskSchedulerBuilder.CreateBuilder()
+            //    .Build();
 
 
-            var nowDate = DateTimeOffset.Now;
+            //var nowDate = DateTimeOffset.Now;
 
-            string newTaskId = "";
+            //string newTaskId = "";
 
-            newTaskId = taskScheduler.TaskAdder
-                .SetHours(nowDate.AddSeconds(8).TimeOfDay, nowDate.AddMinutes(3).TimeOfDay)
-                .SetAction(async (taskArg) =>
-                {
-                    var token = taskArg.CancellationToken.Token;
-                    int i = 0;
-                    while (!token.IsCancellationRequested)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(3), token);
-                        Console.WriteLine("Hello: " + i);
-                        i++;
-                    }
-                })
-                .SetCustomTaskArg(new CustomTaskArgs { Username = "Bob", UserId = Guid.NewGuid().ToString() })
-                .SetTimezone(nowDate.Offset)
-                .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })
-                  .LinkLaunchedStatus(taskArg =>
-                  {
-                      var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>();
-                      Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
-                  })
-                .AddTask();
+            //newTaskId = taskScheduler.TaskAdder
+            //    .SetHours(nowDate.AddSeconds(8).TimeOfDay, nowDate.AddMinutes(3).TimeOfDay)
+            //    .SetAction(async (taskArg) =>
+            //    {
+            //        var token = taskArg.CancellationToken.Token;
+            //        int i = 0;
+            //        while (!token.IsCancellationRequested)
+            //        {
+            //            await Task.Delay(TimeSpan.FromSeconds(3), token);
+            //            Console.WriteLine("Hello: " + i);
+            //            i++;
+            //        }
+            //    })
+            //    .SetCustomTaskArg(new CustomTaskArgs { Username = "Bob", UserId = Guid.NewGuid().ToString() })
+            //    .SetTimezone(nowDate.Offset)
+            //    .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })
+            //      .LinkLaunchedStatus(taskArg =>
+            //      {
+            //          var taskArgWithPayload = taskArg.ConvertTaskArg<CustomTaskArgs>();
+            //          Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
+            //      })
+            //    .AddTask();
 
             while (Console.ReadKey().Key != ConsoleKey.Escape) 
             {
