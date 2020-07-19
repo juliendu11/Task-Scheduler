@@ -55,19 +55,19 @@ namespace TaskScheduler.Classes
 
         public TaskAdder SetHours(TimeSpan startTime, TimeSpan stopTime)
         {
-            return ConvertAndSetHours(startTime, stopTime);
+            ConvertAndSetHours(startTime, stopTime);
+            return this;
         }
 
-        private TaskAdder ConvertAndSetHours(TimeSpan startTime, TimeSpan stopTime)
+        private void ConvertAndSetHours(TimeSpan startTime, TimeSpan stopTime)
         {
-            this.startTime = DateTimeOffset.Now;
-            this.stopTime = DateTimeOffset.Now;
+            this.startTime = this.taskScheduler.SchedulerDateTime;
+            this.stopTime = this.taskScheduler.SchedulerDateTime;
 
             this.startTime = ((DateTimeOffset)this.startTime).Date + startTime;
             this.stopTime = ((DateTimeOffset)this.stopTime).Date + stopTime;
 
             this.taskTimeMode = Enums.TaskTimeMode.HoursProgram;
-            return this;
         }
 
         public TaskAdder SetDay(DateTimeOffset startTime, DateTimeOffset stopTimer)

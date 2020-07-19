@@ -341,3 +341,4 @@ healthchecksdb
 
 Data/
 pushPackageCommand.txt
+.vscode/
