@@ -25,8 +25,17 @@ namespace TaskScheduler.Classes
 
             taskArg.CancellationToken.Token.Register(() => taskArg.Launched = false);
 
-            taskArg.StartTimer = CreateTimer(taskArg.StartTime, taskScheduler.SchedulerDateTime, () => LaunchTask(taskArg));
-            taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => ManageTaskTermination(taskArg));
+            if (taskArg.TaskTimeMode == Enums.TaskTimeMode.DayProgram)
+            {
+                taskArg.StartTimer = CreateTimer(taskArg.StartTime, taskScheduler.SchedulerDateTime, () => LaunchTask(taskArg));
+                taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => ManageTaskTermination(taskArg));
+            }
+            else
+            {
+                taskArg.StartTimer = CreateTimer(taskArg.StartTime.TimeOfDay, taskScheduler.SchedulerDateTime.TimeOfDay, () => LaunchTask(taskArg));
+                taskArg.StopTimer = CreateTimer(taskArg.StopTime.TimeOfDay, taskScheduler.SchedulerDateTime.TimeOfDay, () => ManageTaskTermination(taskArg));
+            }
+
         }
 
         private void VerifyTaskTimers(ITaskArg taskArg)
@@ -39,6 +48,19 @@ namespace TaskScheduler.Classes
         }
 
         private Timer CreateTimer(DateTimeOffset timer, DateTimeOffset current, Action toRun)
+        {
+            TimeSpan timeToGo = timer - current;
+            if (timeToGo < TimeSpan.Zero)
+            {
+                return null;//time already passed
+            }
+            return new System.Threading.Timer(x =>
+            {
+                toRun.Invoke();
+            }, null, timeToGo, Timeout.InfiniteTimeSpan);
+        }
+
+        private Timer CreateTimer(TimeSpan timer, TimeSpan current, Action toRun)
         {
             TimeSpan timeToGo = timer - current;
             if (timeToGo < TimeSpan.Zero)
@@ -94,7 +116,7 @@ namespace TaskScheduler.Classes
 
         private void DeleteTaskIfOptionIsEnabled(ITaskArg taskArg)
         {
-            if (this.taskScheduler.Options.DeleteTaskAfterCompleted 
+            if (this.taskScheduler.Options.DeleteTaskAfterCompleted
                 && taskScheduler.Timers.ContainsKey(taskArg.TaskId))
                 taskScheduler.Timers.Remove(taskArg.TaskId);
         }
