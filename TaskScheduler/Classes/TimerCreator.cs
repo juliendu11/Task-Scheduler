@@ -21,6 +21,14 @@ namespace TaskScheduler.Classes
         {
             Models.ITaskArg taskArg = this.taskScheduler.Timers[taskid];
 
+            var nowDate = DateTimeOffset.Now;
+            if (taskArg.Timezone !=null)
+            {
+                nowDate.ToOffset((TimeSpan)taskArg.Timezone);
+            }
+
+            taskScheduler.UpdateTaskSchedulerDate(nowDate);
+
             VerifyTaskTimers(taskArg);
 
             taskArg.CancellationToken.Token.Register(() => taskArg.Launched = false);

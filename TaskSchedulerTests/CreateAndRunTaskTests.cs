@@ -277,12 +277,12 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(500).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(10).TimeOfDay)
-                   .SetAction(async (x) =>
-                   {
-                       while (!x.CancellationToken.IsCancellationRequested) { }
-                   })
-                   .SetTimezone(TimeSpan.Parse("02:00:00"))
+                    .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(500).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(10).TimeOfDay)
+                    .SetAction(async (x) =>
+                    {
+                        while (!x.CancellationToken.IsCancellationRequested) { }
+                    })
+                    .SetTimezone(TimeSpan.Parse("02:00:00"))
                     .AddTask();
 
                 var getTask = taskScheduler.GetTasksArgWithId(newTaskId);
@@ -530,7 +530,7 @@ namespace TaskSchedulerTests
 
         private void SetSchedulerDate(ITaskScheduler taskScheduler)
         {
-            taskScheduler.UpdateTaskSchedulerDate(DateTimeOffset.ParseExact("2020-07-18 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)); // -> control scheduler datetime for avoid end-of-day date issues
+            return;
         }
     }
 }

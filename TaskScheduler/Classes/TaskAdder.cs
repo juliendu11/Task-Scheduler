@@ -142,7 +142,6 @@ namespace TaskScheduler.Classes
 
             if (this.timezone != null)
             {
-                this.taskScheduler.UpdateTimezone(this.timezone);
                 taskArg.Timezone = this.timezone;
                 taskArg.StartTime.ToOffset(this.timezone);
                 taskArg.StopTime.ToOffset(this.timezone);
