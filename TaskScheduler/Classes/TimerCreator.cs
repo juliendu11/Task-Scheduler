@@ -48,10 +48,11 @@ namespace TaskScheduler.Classes
 
         private void VerifyTaskTimers(ITaskArg taskArg)
         {
-            if (taskArg.StartTime < this.taskScheduler.SchedulerDateTime)
+           
+            if (DateTimeOffset.Compare(taskArg.StartTime, this.taskScheduler.SchedulerDateTime) < 0)
                 throw new SchedulerTimeError("Startup time is smaller than TaskScheduler date (now date)");
 
-            if (taskArg.StopTime < taskArg.StartTime)
+            if (DateTimeOffset.Compare(taskArg.StopTime, taskArg.StartTime) < 0 )
                 throw new SchedulerTimeError("End time is greater than start date");
         }
 

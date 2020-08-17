@@ -9,7 +9,7 @@ Task programming module with times or date, run a Task action for C# (.net core)
 ## Install
 
 ```
-PM> Install-Package SimplyTaskScheduler -Version 1.1.4
+PM> Install-Package SimplyTaskScheduler -Version 1.1.5
 ```
 
 ## How to use ? 

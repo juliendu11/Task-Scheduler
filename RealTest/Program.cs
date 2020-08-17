@@ -51,6 +51,8 @@ namespace RealTest
             //          Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}, user: {taskArgWithPayload.Username}");
             //      })
             //    .AddTask();
+            var nowDate = DateTimeOffset.Now;
+            Console.WriteLine(DateTimeOffset.Compare(nowDate.AddHours(5), nowDate));
 
             while (Console.ReadKey().Key != ConsoleKey.Escape) 
             {
