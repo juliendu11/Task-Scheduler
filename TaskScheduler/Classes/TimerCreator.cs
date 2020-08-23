@@ -22,34 +22,36 @@ namespace TaskScheduler.Classes
             Models.ITaskArg taskArg = this.taskScheduler.Timers[taskid];
 
             var nowDate = DateTimeOffset.Now;
+            if (taskArg.SchedulerDate != null)
+            {
+                nowDate = (DateTimeOffset)taskArg.SchedulerDate;
+            }
             if (taskArg.Timezone !=null)
             {
                 nowDate.ToOffset((TimeSpan)taskArg.Timezone);
             }
 
-            taskScheduler.UpdateTaskSchedulerDate(nowDate);
-
-            VerifyTaskTimers(taskArg);
+            VerifyTaskTimers(taskArg, nowDate);
 
             taskArg.CancellationToken.Token.Register(() => taskArg.Launched = false);
 
             if (taskArg.TaskTimeMode == Enums.TaskTimeMode.DayProgram)
             {
-                taskArg.StartTimer = CreateTimer(taskArg.StartTime, taskScheduler.SchedulerDateTime, () => LaunchTask(taskArg));
-                taskArg.StopTimer = CreateTimer(taskArg.StopTime, taskScheduler.SchedulerDateTime, () => ManageTaskTermination(taskArg));
+                taskArg.StartTimer = CreateTimer(taskArg.StartTime, nowDate, () => LaunchTask(taskArg));
+                taskArg.StopTimer = CreateTimer(taskArg.StopTime, nowDate, () => ManageTaskTermination(taskArg));
             }
             else
             {
-                taskArg.StartTimer = CreateTimer(taskArg.StartTime.TimeOfDay, taskScheduler.SchedulerDateTime.TimeOfDay, () => LaunchTask(taskArg));
-                taskArg.StopTimer = CreateTimer(taskArg.StopTime.TimeOfDay, taskScheduler.SchedulerDateTime.TimeOfDay, () => ManageTaskTermination(taskArg));
+                taskArg.StartTimer = CreateTimer(taskArg.StartTime.TimeOfDay, nowDate.TimeOfDay, () => LaunchTask(taskArg));
+                taskArg.StopTimer = CreateTimer(taskArg.StopTime.TimeOfDay, nowDate.TimeOfDay, () => ManageTaskTermination(taskArg));
             }
 
         }
 
-        private void VerifyTaskTimers(ITaskArg taskArg)
+        private void VerifyTaskTimers(ITaskArg taskArg, DateTimeOffset nowDate)
         {
-            if (DateTimeOffset.Compare(taskArg.StartTime, this.taskScheduler.SchedulerDateTime) < 0)
-                throw new SchedulerTimeError($"Startup time is smaller than TaskScheduler date (now date) - Startup time: {taskArg.StartTime},  TaskScheduler date: {this.taskScheduler.SchedulerDateTime}");
+            if (DateTimeOffset.Compare(taskArg.StartTime,nowDate) < 0)
+                throw new SchedulerTimeError($"Startup time is smaller than TaskScheduler date (now date) - Startup time: {taskArg.StartTime},  TaskScheduler date: {nowDate}");
 
             if (DateTimeOffset.Compare(taskArg.StopTime, taskArg.StartTime) < 0 )
                 throw new SchedulerTimeError($"End time is greater than start date - Startup time: {taskArg.StartTime},  End time: {taskArg.StopTime}");
@@ -118,7 +120,7 @@ namespace TaskScheduler.Classes
         {
             if (taskArg.StopTimer != null)
                 taskArg.StopTimer.Dispose();
-            if (taskArg.StopTimer != null)
+                if (taskArg.StopTimer != null)
                 taskArg.StopTimer = null;
         }
 

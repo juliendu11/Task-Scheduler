@@ -12,11 +12,6 @@ namespace TaskScheduler
 
         Classes.TaskAdder TaskAdder { get; }
 
-        DateTimeOffset SchedulerDateTime { get; }
-
-        void UpdateTimezone(TimeSpan timezone);
-
-        void UpdateTaskSchedulerDate(DateTimeOffset newDate);
 
         ITaskArg GetTasksArgWithId(string taskid);
 

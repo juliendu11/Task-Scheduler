@@ -14,6 +14,8 @@ namespace TaskScheduler.Classes
         private DateTimeOffset? startTime;
         private DateTimeOffset? stopTime;
 
+        private DateTimeOffset? schedulerDate;
+
         private Models.ITaskArg taskArg;
         private Func<ITaskArg,Task> action;
         private TimeSpan timezone;
@@ -26,7 +28,7 @@ namespace TaskScheduler.Classes
         public TaskAdder(ITaskScheduler taskScheduler) 
         {
             this.taskScheduler = taskScheduler;
-            this.timezone = taskScheduler.SchedulerDateTime.Offset;
+            this.timezone = DateTimeOffset.Now.Offset;
         }
 
         public TaskAdder CleanUp()
@@ -37,7 +39,7 @@ namespace TaskScheduler.Classes
             this.taskArg = null;
             this.action = null;
 
-            this.timezone = this.taskScheduler.SchedulerDateTime.Offset;
+            this.timezone = DateTimeOffset.Now.Offset;
             this.taskTimeMode = default;
 
             this.actionForLaunchedStatusChanged = null;
@@ -59,10 +61,17 @@ namespace TaskScheduler.Classes
             return this;
         }
 
+        public TaskAdder SetTaskSchedulerDate(DateTimeOffset date)
+        {
+            this.schedulerDate  =date;
+            return this;
+        }
+
         private void ConvertAndSetHours(TimeSpan startTime, TimeSpan stopTime)
         {
-            this.startTime = this.taskScheduler.SchedulerDateTime;
-            this.stopTime = this.taskScheduler.SchedulerDateTime;
+            var dateNow  =DateTimeOffset.Now;
+            this.startTime = dateNow;
+            this.stopTime = dateNow;
 
             this.startTime = ((DateTimeOffset)this.startTime).Date + startTime;
             this.stopTime = ((DateTimeOffset)this.stopTime).Date + stopTime;
@@ -139,6 +148,8 @@ namespace TaskScheduler.Classes
 
             taskArg.TaskId = newId;
             taskArg.TaskTimeMode = this.taskTimeMode;
+
+            taskArg.SchedulerDate= this.schedulerDate;
 
             if (this.timezone != null)
             {

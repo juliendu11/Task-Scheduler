@@ -21,10 +21,8 @@ namespace TaskSchedulerTests
                 var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
                 .Build();
 
-                SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
-
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(500).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(10).TimeOfDay)
+                   .SetHours(DateTimeOffset.Now.AddMilliseconds(500).TimeOfDay,DateTimeOffset.Now.AddSeconds(10).TimeOfDay)
                    .SetAction(async (x) =>
                    {
                        while (!x.CancellationToken.IsCancellationRequested) { }
@@ -48,7 +46,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(500), taskScheduler.SchedulerDateTime.AddSeconds(10))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(500),DateTimeOffset.Now.AddSeconds(10))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -72,7 +70,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(200).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
+                   .SetHours(DateTimeOffset.Now.AddMilliseconds(200).TimeOfDay,DateTimeOffset.Now.AddSeconds(1).TimeOfDay)
                    .SetAction(async (x) =>
                    {
                        while (!x.CancellationToken.IsCancellationRequested) { }
@@ -97,7 +95,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -125,7 +123,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(300).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
+                   .SetHours(DateTimeOffset.Now.AddMilliseconds(300).TimeOfDay,DateTimeOffset.Now.AddSeconds(1).TimeOfDay)
                    .SetAction(async (x) =>
                    {
                        while (!x.CancellationToken.IsCancellationRequested) { }
@@ -153,7 +151,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -184,7 +182,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(500), taskScheduler.SchedulerDateTime.AddSeconds(2))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(500),DateTimeOffset.Now.AddSeconds(2))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -216,7 +214,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -248,7 +246,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         await Task.Delay(200);
@@ -277,7 +275,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(500).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(10).TimeOfDay)
+                    .SetHours(DateTimeOffset.Now.AddMilliseconds(500).TimeOfDay,DateTimeOffset.Now.AddSeconds(10).TimeOfDay)
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -302,7 +300,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(500), taskScheduler.SchedulerDateTime.AddSeconds(10))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(500),DateTimeOffset.Now.AddSeconds(10))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -327,7 +325,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(200).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
+                   .SetHours(DateTimeOffset.Now.AddMilliseconds(200).TimeOfDay,DateTimeOffset.Now.AddSeconds(1).TimeOfDay)
                    .SetAction(async (x) =>
                    {
                        while (!x.CancellationToken.IsCancellationRequested) { }
@@ -353,7 +351,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -382,7 +380,7 @@ namespace TaskSchedulerTests
                 SetSchedulerDate(taskScheduler);  // -> control scheduler datetime for avoid end-of-day date issues
 
                 var newTaskId = taskScheduler.TaskAdder
-                   .SetHours(taskScheduler.SchedulerDateTime.AddMilliseconds(300).TimeOfDay, taskScheduler.SchedulerDateTime.AddSeconds(1).TimeOfDay)
+                   .SetHours(DateTimeOffset.Now.AddMilliseconds(300).TimeOfDay,DateTimeOffset.Now.AddSeconds(1).TimeOfDay)
                    .SetAction(async (x) =>
                    {
                        while (!x.CancellationToken.IsCancellationRequested) { }
@@ -411,7 +409,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -444,7 +442,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(500), taskScheduler.SchedulerDateTime.AddSeconds(2))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(500),DateTimeOffset.Now.AddSeconds(2))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -477,7 +475,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         while (!x.CancellationToken.IsCancellationRequested) { }
@@ -510,7 +508,7 @@ namespace TaskSchedulerTests
                 taskScheduler.Options.DeleteTaskAfterCompleted = true;
 
                 var newTaskId = taskScheduler.TaskAdder
-                    .SetDay(taskScheduler.SchedulerDateTime.AddMilliseconds(200), taskScheduler.SchedulerDateTime.AddSeconds(1))
+                    .SetDay(DateTimeOffset.Now.AddMilliseconds(200),DateTimeOffset.Now.AddSeconds(1))
                     .SetAction(async (x) =>
                     {
                         await Task.Delay(200);
@@ -525,6 +523,39 @@ namespace TaskSchedulerTests
                 await Task.Delay(TimeSpan.FromMilliseconds(600));
 
                 Assert.IsFalse(notify);
+            }).GetAwaiter().GetResult();
+        }
+
+        [TestMethod]
+        public void Should_Create_1_Task_With_Custom_Date()
+        {
+            Task.Run(async () =>
+            {
+                bool notify = false;
+
+                DateTimeOffset dateNow = DateTimeOffset.ParseExact("2020-07-18 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+                var taskScheduler = TaskSchedulerBuilder.CreateBuilder().Build();
+
+                taskScheduler.Options.DeleteTaskAfterCompleted = true;
+
+                var newTaskId = taskScheduler.TaskAdder
+                    .SetHours(dateNow.AddMilliseconds(2).TimeOfDay, dateNow.AddSeconds(5).TimeOfDay)
+                    .SetTaskSchedulerDate(dateNow)
+                    .SetAction(async (x) =>
+                    {
+                        while(!x.CancellationToken.IsCancellationRequested) {}
+                    })
+                    .LinkFinishedStatus(async (x) =>
+                    {
+                        notify = x.Launched;
+                    })
+                     .SetTimezone(dateNow.Offset)
+                     .AddTask();
+
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                Assert.AreEqual(1,taskScheduler.Timers.Count);
             }).GetAwaiter().GetResult();
         }
 

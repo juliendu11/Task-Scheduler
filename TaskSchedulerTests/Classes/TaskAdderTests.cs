@@ -223,6 +223,7 @@ namespace TaskScheduler.Classes.Tests
             //...Your custom prop, field,...
             public string Username { get; set; }
             public string UserId { get; set; }
+            public DateTimeOffset? SchedulerDate { get; set; }
         }
     }
 }

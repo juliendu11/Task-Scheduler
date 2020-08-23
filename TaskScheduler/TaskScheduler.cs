@@ -9,10 +9,8 @@ namespace TaskScheduler
 {
     public class TaskScheduler :ITaskScheduler
     {
-        private TimeSpan defaultTimezone;
 
         public Dictionary<string, ITaskArg> Timers { get; private set; }
-        public DateTimeOffset SchedulerDateTime { get; internal set; }
 
         private Action linkTasksLaunched;
         private Action linkTasksFinished;
@@ -22,7 +20,6 @@ namespace TaskScheduler
         {
             get
             {
-                SchedulerDateTime.ToOffset(defaultTimezone);
                 return taskAdder.CleanUp();
             }
         }
@@ -34,8 +31,6 @@ namespace TaskScheduler
         public TaskScheduler(Action linkTasksLaunched, Action linkTasksFinished)
         {
             this.Timers = new Dictionary<string, ITaskArg>();
-            this.SchedulerDateTime = DateTimeOffset.Now;
-            this.defaultTimezone = DateTimeOffset.Now.Offset;
             this.TimerCreator = new Classes.TimerCreator(this);
             this.Options = new Options();
             this.linkTasksLaunched = linkTasksLaunched;
@@ -43,16 +38,17 @@ namespace TaskScheduler
             this.taskAdder = new Classes.TaskAdder(this);
         }
         
+
+        [Obsolete("Use SetScheduler Date directly when you create a task and if you want to put a specific date")]
         public void UpdateTimezone(TimeSpan timezone)
         {
-            this.defaultTimezone = timezone;
-            this.SchedulerDateTime.ToOffset(timezone);
+            return;
         }
 
+        [Obsolete("Use SetScheduler Date directly when you create a task and if you want to put a specific date")]
         public void UpdateTaskSchedulerDate(DateTimeOffset newDate)
         {
-            this.defaultTimezone = newDate.Offset;
-            this.SchedulerDateTime = newDate;
+            return;
         }
 
         public ITaskArg GetTasksArgWithId(string taskid)

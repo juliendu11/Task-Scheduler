@@ -58,6 +58,37 @@ static void NewTaskSimpleTaskArgs()
 ```
 ---
 
+### 🛠️ Create a simple Task with custom date (for unit test or other)
+
+```c#
+static void NewTaskSimpleTaskArgs()
+{
+      string newTaskId = "";
+
+      DateTimeOffset dateNow = DateTimeOffset.ParseExact("2020-07-18 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+      newTaskId = taskScheduler.TaskAdder
+        .SetHours(dateNow.AddMinutes(20).TimeOfDay, dateNow.AddMinutes(50).TimeOfDay)
+        .SetTaskSchedulerDate(dateNow) // <---
+        .SetAction(async (taskArg) =>
+        {
+            var token = taskArg.CancellationToken.Token;
+            int i = 0;
+            while (!token.IsCancellationRequested)
+            {
+              await Task.Delay(TimeSpan.FromSeconds(3), token);
+              Console.WriteLine("Hello: " + i);
+              i++;
+            }
+        })
+        .SetTimezone(dateNow.Offset)
+        .LinkFinishedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, finished: {taskArg.Finished}"); })//Optional
+        .LinkLaunchedStatus(taskArg => { Console.WriteLine($"Tâche: {taskArg.TaskId}, launched: {taskArg.Launched}"); })//Optional
+        .AddTask();
+}
+```
+---
+
 ### 🛠️ Create a simple Task with Payload
 
 ```c#
@@ -145,16 +176,6 @@ static void NewTaskWithCustomTaskArg()
  - SetAction must be a task action, you must put "async" if you put a synchronous action ("async" is required)
  - If you put an asynchronous action or a loop for SetAction, use the taskArg token as in the examples above, this will force the task to stop once the schedule has ended
 
-- If you use SetHours and the day ends in 15 minutes and you put a schedule + 20 minutes celà will be problem because it will not take the next day but only for the current day !!
-
-example:
-
-```
-Today date : "2020-07-18 23:45"
-
-.SetHours(DateTimeOffset.Now.AddMinutes(20).TimeOfDay, DateTimeOffset.Now.AddMinutes(50).TimeOfDay) -> Error
-
-```
 
 For proper functioning do not use SetHours or do not put a Date + Add as the example above or best option is SetDay. Especially if you are using the timezone
 
@@ -190,6 +211,7 @@ class CustomTaskArgs : ITaskArg
     public Timer StopTimer { get;  set; }
     public Action<ITaskArg> ActionWhenLaunchedChanged { get;  set; }
     public Action<ITaskArg> ActionWhenFinishedChanged { get;  set; }
+    public DateTimeOffset? SchedulerDate {get;set;}
 
     public bool Launched
     {
@@ -222,10 +244,7 @@ class CustomTaskArgs : ITaskArg
 ```c#
 public class CustomTaskScheduler : ITaskScheduler
 {
-   private TimeSpan defaultTimezone;
-
     public Dictionary<string, ITaskArg> Timers { get; private set; }
-    public DateTimeOffset SchedulerDateTime { get; internal set; }
 
     private Action linkTasksLaunched;
     private Action linkTasksFinished;
@@ -235,7 +254,6 @@ public class CustomTaskScheduler : ITaskScheduler
     {
         get
         {
-          SchedulerDateTime.ToOffset(defaultTimezone);
           return taskAdder.CleanUp();
         }
     }
@@ -256,11 +274,6 @@ public class CustomTaskScheduler : ITaskScheduler
         this.taskAdder = new TaskScheduler.Classes.TaskAdder(this);
     }
 
-
-    public void UpdateTimezone(TimeSpan timezone)
-    {
-        this.SchedulerDateTime.ToOffset(timezone);
-    }
 
     public ITaskArg GetTasksArgWithId(string taskid)
     {

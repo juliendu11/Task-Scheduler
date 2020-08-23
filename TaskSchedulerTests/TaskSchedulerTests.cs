@@ -24,23 +24,6 @@ namespace TaskScheduler.Tests
         }
 
         [TestMethod()]
-        public void Should_Update_Scheduler_DateTime_Property_With_New_Timezone()
-        {
-            var taskScheduler = TaskSchedulerBuilder.CreateBuilder()
-               .Build();
-
-            var schedulerDateTimeBeforeUpdate = taskScheduler.SchedulerDateTime;
-
-            var newTimezone = TimeSpan.Parse("05:00:00");
-
-            taskScheduler.UpdateTimezone(newTimezone);
-
-            var schedulerDateTimeAfterUpdate = taskScheduler.SchedulerDateTime;
-
-            Assert.AreEqual(schedulerDateTimeAfterUpdate, schedulerDateTimeBeforeUpdate.ToOffset(newTimezone));
-        }
-
-        [TestMethod()]
         public void Should_Get_Task_With_Existing_TaskId_Return_Task()
         {
             var taskScheduler = TaskSchedulerBuilder.CreateBuilder()

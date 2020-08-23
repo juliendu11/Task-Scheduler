@@ -80,6 +80,7 @@ namespace TaskScheduler.Tests
             //...Your custom prop, field,...
             public string Username { get; set; }
             public string UserId { get; set; }
+            public DateTimeOffset? SchedulerDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
 
         public class CustomTaskScheduler : ITaskScheduler
@@ -87,7 +88,6 @@ namespace TaskScheduler.Tests
             private TimeSpan defaultTimezone;
 
             public Dictionary<string, ITaskArg> Timers { get; private set; }
-            public DateTimeOffset SchedulerDateTime { get; internal set; }
 
             private Action linkTasksLaunched;
             private Action linkTasksFinished;
@@ -97,7 +97,6 @@ namespace TaskScheduler.Tests
             {
                 get
                 {
-                    SchedulerDateTime.ToOffset(defaultTimezone);
                     return taskAdder.CleanUp();
                 }
             }
@@ -109,26 +108,12 @@ namespace TaskScheduler.Tests
             public CustomTaskScheduler(Action linkTasksLaunched, Action linkTasksFinished)
             {
                 this.Timers = new Dictionary<string, ITaskArg>();
-                this.SchedulerDateTime = DateTimeOffset.Now;
-                this.defaultTimezone = DateTimeOffset.Now.Offset;
                 this.TimerCreator = new Classes.TimerCreator(this);
                 this.Options = new Options();
                 this.linkTasksLaunched = linkTasksLaunched;
                 this.linkTasksFinished = linkTasksFinished;
                 this.taskAdder = new Classes.TaskAdder(this);
             }
-
-
-            public void UpdateTimezone(TimeSpan timezone)
-            {
-                this.SchedulerDateTime.ToOffset(timezone);
-            }
-
-            public void UpdateTaskSchedulerDate(DateTimeOffset newDate)
-            {
-                this.SchedulerDateTime = newDate;
-            }
-
 
             public ITaskArg GetTasksArgWithId(string taskid)
             {

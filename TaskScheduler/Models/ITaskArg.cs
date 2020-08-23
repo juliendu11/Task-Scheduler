@@ -32,5 +32,7 @@ namespace TaskScheduler.Models
 
         public bool Launched { get; set; }
         public bool Finished { get; set; }
+
+        public DateTimeOffset? SchedulerDate {get;set;}
     }
 }

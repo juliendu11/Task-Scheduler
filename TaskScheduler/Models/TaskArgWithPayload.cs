@@ -35,6 +35,8 @@ namespace TaskScheduler.Models
 
         public Action<ITaskArg> ActionWhenFinishedChanged { get; set; }
 
+        public DateTimeOffset? SchedulerDate {get;set;}
+
         public bool Launched
         {
             get => launched;
