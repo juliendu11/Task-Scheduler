@@ -52,7 +52,7 @@ namespace RealTest
             //      })
             //    .AddTask();
             var nowDate = DateTimeOffset.Now;
-            Console.WriteLine(DateTimeOffset.Compare(nowDate.AddHours(5), nowDate));
+            Console.WriteLine($"Test: {nowDate}");
 
             while (Console.ReadKey().Key != ConsoleKey.Escape) 
             {

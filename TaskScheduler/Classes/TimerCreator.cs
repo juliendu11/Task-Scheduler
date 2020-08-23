@@ -48,12 +48,11 @@ namespace TaskScheduler.Classes
 
         private void VerifyTaskTimers(ITaskArg taskArg)
         {
-           
             if (DateTimeOffset.Compare(taskArg.StartTime, this.taskScheduler.SchedulerDateTime) < 0)
-                throw new SchedulerTimeError("Startup time is smaller than TaskScheduler date (now date)");
+                throw new SchedulerTimeError($"Startup time is smaller than TaskScheduler date (now date) - Startup time: {taskArg.StartTime},  TaskScheduler date: {this.taskScheduler.SchedulerDateTime}");
 
             if (DateTimeOffset.Compare(taskArg.StopTime, taskArg.StartTime) < 0 )
-                throw new SchedulerTimeError("End time is greater than start date");
+                throw new SchedulerTimeError($"End time is greater than start date - Startup time: {taskArg.StartTime},  End time: {taskArg.StopTime}");
         }
 
         private Timer CreateTimer(DateTimeOffset timer, DateTimeOffset current, Action toRun)
