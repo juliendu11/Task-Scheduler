@@ -134,7 +134,7 @@ namespace TaskScheduler.Classes
 
         private void GenerateNewTaskArg()
         {
-            string newId = Guid.NewGuid().ToString();
+            string newId = GenerateId();
 
             if (taskArg == null)
                 taskArg = new Models.TaskArgWithPayload<object>(null);
