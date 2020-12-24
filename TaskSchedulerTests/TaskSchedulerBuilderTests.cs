@@ -169,6 +169,11 @@ namespace TaskScheduler.Tests
                 this.TimerCreator.ManageTaskTermination(this.Timers[taskId]);
                 this.Timers.Remove(taskId);
             }
+
+            public bool CheckIdExist(string id)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

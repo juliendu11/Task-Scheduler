@@ -18,11 +18,32 @@ namespace RealTest
         static void Main(string[] args)
         {
             var nowDate = DateTimeOffset.Now;
-            Console.WriteLine($"Test: {nowDate}");
 
-            while (Console.ReadKey().Key != ConsoleKey.Escape) 
+            taskScheduler = TaskScheduler.TaskSchedulerBuilder.CreateBuilder()
+                .Build();
+           
+            for(int i=0; i< 50; i++)
             {
+                 var newId = GenerateId();
+            taskScheduler.Timers.Add(newId, new TaskArgWithPayload<string>(""));
+            Console.WriteLine(newId);
             }
+
+            Console.ReadLine();
+        }
+
+        private static string GenerateId()
+        {
+            string id = string.Empty;
+            do
+            {
+                string randomString = DateTimeOffset.UtcNow.Ticks.ToString();
+                string ramdomString2 = Guid.NewGuid().ToString("N");
+                id = randomString + ramdomString2;
+            }
+            while (taskScheduler.CheckIdExist(id));
+
+            return id;
         }
     }
 }

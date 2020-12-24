@@ -95,5 +95,10 @@ namespace TaskScheduler
             this.TimerCreator.ManageTaskTermination(this.Timers[taskId]);
             this.Timers.Remove(taskId);
         }
+
+        public bool CheckIdExist(string id)
+        {
+            return this.Timers != null && this.Timers.Count != 0 && this.Timers.ContainsKey(id);
+        }
     }
 }

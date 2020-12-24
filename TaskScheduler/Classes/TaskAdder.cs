@@ -17,7 +17,7 @@ namespace TaskScheduler.Classes
         private DateTimeOffset? schedulerDate;
 
         private Models.ITaskArg taskArg;
-        private Func<ITaskArg,Task> action;
+        private Func<ITaskArg, Task> action;
         private TimeSpan timezone;
 
         private Enums.TaskTimeMode taskTimeMode;
@@ -25,7 +25,7 @@ namespace TaskScheduler.Classes
         private Action<ITaskArg> actionForLaunchedStatusChanged;
         private Action<ITaskArg> actionForFinishedStatusChanged;
 
-        public TaskAdder(ITaskScheduler taskScheduler) 
+        public TaskAdder(ITaskScheduler taskScheduler)
         {
             this.taskScheduler = taskScheduler;
             this.timezone = DateTimeOffset.Now.Offset;
@@ -63,13 +63,13 @@ namespace TaskScheduler.Classes
 
         public TaskAdder SetTaskSchedulerDate(DateTimeOffset date)
         {
-            this.schedulerDate  =date;
+            this.schedulerDate = date;
             return this;
         }
 
         private void ConvertAndSetHours(TimeSpan startTime, TimeSpan stopTime)
         {
-            var dateNow  =DateTimeOffset.Now;
+            var dateNow = DateTimeOffset.Now;
             this.startTime = dateNow;
             this.stopTime = dateNow;
 
@@ -99,7 +99,7 @@ namespace TaskScheduler.Classes
             return this;
         }
 
-        public TaskAdder SetAction(Func<ITaskArg,Task> action)
+        public TaskAdder SetAction(Func<ITaskArg, Task> action)
         {
             this.action = action;
             return this;
@@ -149,7 +149,7 @@ namespace TaskScheduler.Classes
             taskArg.TaskId = newId;
             taskArg.TaskTimeMode = this.taskTimeMode;
 
-            taskArg.SchedulerDate= this.schedulerDate;
+            taskArg.SchedulerDate = this.schedulerDate;
 
             if (this.timezone != null)
             {
@@ -167,6 +167,20 @@ namespace TaskScheduler.Classes
         {
             this.taskScheduler.Timers.Add(taskArg.TaskId, taskArg);
             this.taskScheduler.TimerCreator.SetUpTimers(taskArg.TaskId);
+        }
+
+        private string GenerateId()
+        {
+            string id = string.Empty;
+            do
+            {
+                string randomString = DateTimeOffset.UtcNow.Ticks.ToString();
+                string ramdomString2 = Guid.NewGuid().ToString("N");
+                id = randomString + ramdomString2;
+            }
+            while (taskScheduler.CheckIdExist(id));
+
+            return id;
         }
     }
 }

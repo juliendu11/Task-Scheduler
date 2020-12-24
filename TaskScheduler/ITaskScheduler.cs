@@ -32,5 +32,7 @@ namespace TaskScheduler
         Options Options { get; }
 
         Classes.TimerCreator TimerCreator { get; }
+
+        bool CheckIdExist(string id);
     }
 }
